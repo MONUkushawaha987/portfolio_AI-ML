@@ -4,6 +4,7 @@
  * Theme toggle, animations, form validation, and interactive features
  * ==========================================================================
  */
+// public key
 emailjs.init("0hyc99zj5DBkOau7v");
 'use strict';
 
@@ -290,7 +291,7 @@ function validateField(field) {
 
         await emailjs.send(
             "service_sg56w9g",
-            "template_c36yuj1",
+            "template_ipiw5n3",
             {
                 name: document.getElementById("name").value,
                 email: document.getElementById("email").value,
