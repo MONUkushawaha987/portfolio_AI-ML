@@ -4,7 +4,7 @@
  * Theme toggle, animations, form validation, and interactive features
  * ==========================================================================
  */
-
+emailjs.init("0hyc99zj5DBkOau7v");
 'use strict';
 
 /* ---------- DOM Elements ---------- */
@@ -266,40 +266,54 @@ function validateField(field) {
 /**
  * Handle contact form submission with client-side validation
  * @param {Event} e
- */
-function handleFormSubmit(e) {
-  e.preventDefault();
+ */async function handleFormSubmit(e) {
+    e.preventDefault();
 
-  const fields = contactForm.querySelectorAll('.form__input');
-  let isFormValid = true;
+    const fields = contactForm.querySelectorAll(".form__input");
+    let isFormValid = true;
 
-  fields.forEach((field) => {
-    if (!validateField(field)) {
-      isFormValid = false;
+    fields.forEach(field => {
+        if (!validateField(field)) {
+            isFormValid = false;
+        }
+    });
+
+    if (!isFormValid) return;
+
+    const submitBtn = contactForm.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = "Sending...";
+
+    try {
+
+        await emailjs.send(
+            "service_sg56w9g",
+            "template_c36yuj1",
+            {
+                name: document.getElementById("name").value,
+                email: document.getElementById("email").value,
+                subject: document.getElementById("subject").value,
+                message: document.getElementById("message").value
+            }
+        );
+
+        contactForm.reset();
+
+        document.getElementById("form-success").hidden = false;
+
+        setTimeout(() => {
+            document.getElementById("form-success").hidden = true;
+        }, 5000);
+
+    } catch (error) {
+        alert("Failed to send message.");
+        console.error(error);
     }
-  });
 
-  if (!isFormValid) return;
-
-  // Simulate form submission (replace with actual backend/API call)
-  const submitBtn = contactForm.querySelector('button[type="submit"]');
-  const originalText = submitBtn.innerHTML;
-
-  submitBtn.disabled = true;
-  submitBtn.innerHTML = 'Sending...';
-
-  setTimeout(() => {
     submitBtn.disabled = false;
     submitBtn.innerHTML = originalText;
-    contactForm.reset();
-
-    const successEl = document.getElementById('form-success');
-    successEl.hidden = false;
-
-    setTimeout(() => {
-      successEl.hidden = true;
-    }, 5000);
-  }, 1500);
 }
 
 /* ---------- Smooth Scroll for Anchor Links ---------- */
